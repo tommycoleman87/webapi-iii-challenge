@@ -21,7 +21,7 @@ router.post('/:id/posts', validatePost, validateUserId, (req, res) => {
         res.status(201).json(result)
     })
     .catch(err => {
-        res.status(500).json({error: err})
+        res.status(500).json({message: 'Could not get user posts', error: err})
     })
 });
 
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
         res.status(200).json(result)
     })
     .catch(err => {
-        res.status(500).json(err)
+        res.status(500).json({message: 'Could not get users', error: err})
     })
 });
 
@@ -41,7 +41,7 @@ router.get('/:id', validateUserId, (req, res) => {
         res.status(200).json(result)
     })
     .catch(err => {
-        res.status(500).json({error: "Could not retrieve user"})
+        res.status(500).json({message: "Could not retrieve user", error: err})
     })
 });
 
@@ -51,7 +51,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
         res.status(200).json(result)
     })
     .catch(err => {
-        res.status(500).json({error: 'Could not retrieve posts'})
+        res.status(500).json({message: 'Could not retrieve posts', error: err})
     })
 });
 
@@ -61,7 +61,7 @@ router.delete('/:id', validateUserId, (req, res) => {
         res.status(200).json(result)
     })
     .catch(err => {
-        res.status(500).json({error: 'Could not delete user'})
+        res.status(500).json({message: 'Could not delete user', error: err})
     })
 });
 
@@ -72,7 +72,7 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
         res.status(200).json(result)
     })
     .catch(err => {
-        res.status(500).json({error: 'Could not update user'})
+        res.status(500).json({message: 'Could not update user', error: err})
     })
 });
 
@@ -83,7 +83,6 @@ function validateUserId(req, res, next) {
     .then(result => {
         if(result) {
             req.user = result;
-            console.log(req.user)
             next();
         } else {
             res.status(404).json({ message: "invalid user id" })
@@ -93,7 +92,7 @@ function validateUserId(req, res, next) {
 
 function validateUser(req, res, next) {
     const user = req.body;
-    if(!user) {
+    if(Object.entries(user).length < 1) {
         res.status(400).json({message: 'Missing user data'})
     } else if(!user.name){
         res.status(400).json({message: 'Missing required name field'})
